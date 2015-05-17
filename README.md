@@ -4,12 +4,12 @@ Eventhustle is a semi average doodle like restful backend to schedule events wit
 
 Mainly created for learning Go
 
+***
+
 # Technologies
 
 - Data persistence: MongoDB and MGO
 - Rest Framework: Gorilla Web toolkit 
-
-***
 
 # Todo
 
