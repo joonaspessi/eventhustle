@@ -7,5 +7,5 @@ Mainly created for learning Go
 ***
 
 # Todo
-Endpoint: /api/v1/event/{id}/vote
-Endpoint: /api/v1/event/{id}/results
+[] Endpoint: /api/v1/event/{id}/vote
+[] Endpoint: /api/v1/event/{id}/results
