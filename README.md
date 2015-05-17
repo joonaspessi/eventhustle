@@ -8,8 +8,10 @@ Mainly created for learning Go
 
 # Todo
 
-- [ ] Endpoint: /api/v1/event/{id}/vote
-- [ ] Endpoint: /api/v1/event/{id}/results
+- [x] Endpoint: /api/v1/event/{id}/vote
+- [x] Endpoint: /api/v1/event/{id}/results
 - [ ] Tests
 - [ ] Instructions how to build & run
 - [ ] Api doc
+- [ ] Duplicate check for name on vote add
+- [ ] Multiple result day

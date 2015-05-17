@@ -1,8 +1,15 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"gopkg.in/mgo.v2/bson"
 )
+
+type PersonVote struct {
+	Name  string   `json:"name"`
+	Votes []string `json:"votes"`
+}
 
 type Vote struct {
 	Date   string   `json:"date"`
@@ -18,6 +25,8 @@ type Event struct {
 	Votes Votes         `json:"votes,omitempty"`
 }
 
+type Events []Event
+
 func (v *Event) GetResult() Event {
 	result := *v
 
@@ -32,21 +41,32 @@ func (v *Event) GetResult() Event {
 	return result
 }
 
-type Events []Event
+func (v *Event) getVoteDay(date string) (*Vote, error) {
+	var resultVote *Vote
+	var err error
 
-type omit *struct{}
+	for i, vote := range v.Votes {
+		if vote.Date == date {
+			resultVote = &v.Votes[i]
+		}
+	}
 
-// Event info presentation
-type EventInfo struct {
-	*Event
-	Dates omit `json:"dates,omitempty"`
-	Votes omit `json:"votes,omitempty"`
+	if resultVote == nil {
+		err = errors.New("Vote day not found")
+	}
+
+	return resultVote, err
 }
 
-// Event result presentation
-type EventResult struct {
-	*Event
-	Dates        omit   `json:"dates,omitempty"`
-	Votes        omit   `json:"votes,omitempty"`
-	SuitableDays *Votes `json:"suitableDates"`
+func (v *Event) AddVote(date string, name string) *Event {
+
+	vote, err := v.getVoteDay(date)
+
+	if err != nil {
+		err = errors.New("not found")
+	} else {
+		vote.People = append(vote.People, name)
+	}
+
+	return v
 }

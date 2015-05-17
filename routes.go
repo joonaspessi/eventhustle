@@ -42,4 +42,10 @@ var routes = Routes{
 		"/events/{eventId}/results",
 		EventResults,
 	},
+	Route{
+		"EventVote",
+		"POST",
+		"/events/{eventId}/vote",
+		EventVote,
+	},
 }

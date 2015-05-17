@@ -30,31 +30,31 @@ func init() {
 		if err != nil {
 			panic(err)
 		}
-	}
-
-	db = session.DB("eventhustle").C("events")
-
-	err = db.Insert(
-		&Event{
-			Name:  "Polttarit",
-			Dates: []string{"10-10-2015", "11-11-2015"},
-			Votes: []Vote{
-				{"10-10-2015", []string{"Jack", "Jones", "Albert"}},
-				{"11-11-2015", []string{"Jack", "Jones"}},
+		db = session.DB("eventhustle").C("events")
+		err = db.Insert(
+			&Event{
+				Name:  "Polttarit",
+				Dates: []string{"10-10-2015", "11-11-2015"},
+				Votes: []Vote{
+					{"10-10-2015", []string{"Jack", "Jones", "Albert"}},
+					{"11-11-2015", []string{"Jack", "Jones"}},
+				},
 			},
-		},
-		&Event{
-			Name:  "Häät",
-			Dates: []string{"10-10-2014", "11-11-2015"},
-		},
-		&Event{
-			Name:  "Hautajaiset",
-			Dates: []string{"10-10-2014", "11-11-2015"},
-		},
-	)
+			&Event{
+				Name:  "Häät",
+				Dates: []string{"10-10-2014", "11-11-2015"},
+			},
+			&Event{
+				Name:  "Hautajaiset",
+				Dates: []string{"10-10-2014", "11-11-2015"},
+			},
+		)
 
-	if err != nil {
-		panic(err)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		db = session.DB("eventhustle").C("events")
 	}
 
 	fmt.Println("database connection established")
@@ -101,6 +101,26 @@ func GetEvent(id string) (Event, error) {
 
 func GetEventResult(id string) (Event, error) {
 	event, err := GetEvent(id)
+
+	return event, err
+}
+
+func AddEventVote(id string, personVote *PersonVote) (Event, error) {
+	event, err := GetEvent(id)
+
+	if err != nil {
+		return Event{}, err
+	}
+
+	for _, voteDay := range personVote.Votes {
+		event.AddVote(voteDay, personVote.Name)
+	}
+
+	_, err = db.UpsertId(bson.ObjectIdHex(id), event)
+
+	if err != nil {
+		panic(err)
+	}
 
 	return event, err
 }
