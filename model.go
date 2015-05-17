@@ -18,6 +18,20 @@ type Event struct {
 	Votes Votes         `json:"votes,omitempty"`
 }
 
+func (v *Event) GetResult() Event {
+	result := *v
+
+	mostVotes := 0
+	for _, vote := range v.Votes {
+		if len(vote.People) > mostVotes {
+			result.Votes = []Vote{vote}
+			mostVotes = len(vote.People)
+		}
+	}
+
+	return result
+}
+
 type Events []Event
 
 type omit *struct{}

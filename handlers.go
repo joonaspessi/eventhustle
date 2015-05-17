@@ -98,6 +98,7 @@ func EventResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	event = event.GetResult()
 	eventResult := EventResult{Event: &event, SuitableDays: &event.Votes}
 
 	w.WriteHeader(http.StatusOK)
