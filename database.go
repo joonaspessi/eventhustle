@@ -1,10 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"log"
 )
 
 var (
@@ -38,7 +38,10 @@ func init() {
 		&Event{
 			Name:  "Polttarit",
 			Dates: []string{"10-10-2015", "11-11-2015"},
-			Votes: []Vote{{"10-10-2014", []string{"jorma"}}},
+			Votes: []Vote{
+				{"10-10-2015", []string{"Jack", "Jones", "Albert"}},
+				{"11-11-2015", []string{"Jack", "Jones"}},
+			},
 		},
 		&Event{
 			Name:  "Häät",
@@ -84,14 +87,22 @@ func GetEvents() []Event {
 	return results
 }
 
-func GetEvent(id string) Event {
+func GetEvent(id string) (Event, error) {
 	var result Event
-	err := db.FindId(bson.ObjectIdHex(id)).One(&result)
-
-	if err != nil {
-		log.Fatal(err)
+	var err error
+	if bson.IsObjectIdHex(id) == false {
+		err = errors.New("Not valid id")
+	} else {
+		err = db.FindId(bson.ObjectIdHex(id)).One(&result)
 	}
-	return result
+
+	return result, err
+}
+
+func GetEventResult(id string) (Event, error) {
+	event, err := GetEvent(id)
+
+	return event, err
 }
 
 func DBClose() {

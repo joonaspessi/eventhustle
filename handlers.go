@@ -32,6 +32,7 @@ func EventCreate(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(err); err != nil {
 			panic(err)
 		}
+		return
 	}
 
 	t := CreateEvent(event)
@@ -61,14 +62,46 @@ func EventIndex(w http.ResponseWriter, r *http.Request) {
 
 func EventShow(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
 
 	vars := mux.Vars(r)
 	eventId := vars["eventId"]
 
-	event := GetEvent(eventId)
+	event, err := GetEvent(eventId)
 
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		if err := json.NewEncoder(w).Encode(err); err != nil {
+			panic(err)
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(event); err != nil {
+		panic(err)
+	}
+}
+
+func EventResults(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+	eventId := vars["eventId"]
+
+	event, err := GetEventResult(eventId)
+
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		if err := json.NewEncoder(w).Encode(err); err != nil {
+			panic(err)
+		}
+		return
+	}
+
+	eventResult := EventResult{Event: &event, SuitableDays: &event.Votes}
+
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(eventResult); err != nil {
 		panic(err)
 	}
 }

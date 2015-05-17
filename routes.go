@@ -36,4 +36,10 @@ var routes = Routes{
 		"/events/{eventId}",
 		EventShow,
 	},
+	Route{
+		"EventResults",
+		"GET",
+		"/events/{eventId}/results",
+		EventResults,
+	},
 }
